@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const { Post, User, Yes, Comment } = require('../../models');
 const sequelize = require('../../config/connection');
+const session = require('express-session');
 
 // get all users
 router.get('/', (req, res) => {
@@ -99,12 +100,16 @@ router.post('/', (req, res) => {
 // PUT /api/posts/upYes
 router.put('/yes', (req, res) => {
   // custom static method created in models/Post.js
-  Post.yes(req.body, { Yes })
-    .then(updatedPostData => res.json(updatedPostData))
+  if (req.session) {
+    
+  // pass session id along with all destructured properties on req.body
+  Post.yes({...req.body, user_id: req.session.user_id}, { Yes, Comment, User })
+    .then(updatedYesData => res.json(updatedYesData))
     .catch(err => {
       console.log(err);
-      res.status(400).json(err);
+      res.status(500).json(err);
     });
+  }
 });
 
 router.put('/:id', (req, res) => {
