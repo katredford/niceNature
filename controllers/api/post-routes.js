@@ -1,8 +1,6 @@
 const router = require('express').Router();
 const sequelize = require('../../config/connection');
-const { Post, User, Yes, Comment } = require('../../models');
-
-// const session = require('express-session');
+const { Post, User, Comment, Yes } = require('../../models');
 
 // get all users
 router.get('/', (req, res) => {
@@ -13,12 +11,9 @@ router.get('/', (req, res) => {
       'post_text',
       'title',
       'created_at',
-      [sequelize.literal('(SELECT COUNT(*) FROM yes WHERE post.id = yes.post_id)'),
-        'yes_count']
-      ],
-
-    order: [['created_at', 'DESC']],
-   include: [
+      [sequelize.literal('(SELECT COUNT(*) FROM yes WHERE post.id = yes.post_id)'), 'yes_count']
+    ],
+    include: [
       {
         model: Comment,
         attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
@@ -38,7 +33,6 @@ router.get('/', (req, res) => {
       console.log(err);
       res.status(500).json(err);
     });
-
 });
 
 router.get('/:id', (req, res) => {
@@ -82,31 +76,30 @@ router.get('/:id', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-  // expects {title: 'look at this cool rooock', post_text: 'https://niceNature/coolstuff', user_id: 1}
-  Post.create({
-    title: req.body.title,
-    post_text: req.body.post_text,
-    user_id: req.body.user_id
-  })
-    .then(dbPostData => res.json(dbPostData))
-    .catch(err => {
-      console.log(err);
-      res.status(500).json(err);
-    });
+  // expects {title: 'Taskmaster goes public!', post_text: 'https://taskmaster.com/press', user_id: 1}
+  if (req.session) {
+    Post.create({
+      title: req.body.title,
+      post_text: req.body.post_text,
+      user_id: req.session.user_id
+    })
+      .then(dbPostData => res.json(dbPostData))
+      .catch(err => {
+        console.log(err);
+        res.status(500).json(err);
+      });
+  }
 });
 
-// PUT /api/posts/upYes
 router.put('/yes', (req, res) => {
   // custom static method created in models/Post.js
   if (req.session) {
-    
-  // pass session id along with all destructured properties on req.body
-  Post.yes({...req.body, user_id: req.session.user_id}, { Yes, Comment, User })
-    .then(updatedYesData => res.json(updatedYesData))
-    .catch(err => {
-      console.log(err);
-      res.status(500).json(err);
-    });
+    Post.yes({ ...req.body, user_id: req.session.user_id }, { Yes, Comment, User })
+      .then(updatedyesData => res.json(updatedyesData))
+      .catch(err => {
+        console.log(err);
+        res.status(500).json(err);
+      });
   }
 });
 
@@ -135,6 +128,7 @@ router.put('/:id', (req, res) => {
 });
 
 router.delete('/:id', (req, res) => {
+  console.log('id', req.params.id);
   Post.destroy({
     where: {
       id: req.params.id
@@ -152,6 +146,5 @@ router.delete('/:id', (req, res) => {
       res.status(500).json(err);
     });
 });
-
 
 module.exports = router;

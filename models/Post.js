@@ -18,7 +18,7 @@ class Post extends Model {
         'post_text',
         'title',
         'created_at',
-        // use raw MySQL aggregate function query to get a count of how many Yess the post has and return it under the name `Yes_count`
+        // use raw MySQL aggregate function query to get a count of how many Yess the post has and return it under the name `yes_count`
         [sequelize.literal('(SELECT COUNT(*) FROM yes WHERE post.id = yes.post_id)'),
           'yes_count'
         ]
