@@ -1,7 +1,8 @@
 const router = require('express').Router();
-const { Post, User, Yes, Comment } = require('../../models');
 const sequelize = require('../../config/connection');
-const session = require('express-session');
+const { Post, User, Yes, Comment } = require('../../models');
+
+// const session = require('express-session');
 
 // get all users
 router.get('/', (req, res) => {
@@ -17,16 +18,15 @@ router.get('/', (req, res) => {
       ],
 
     order: [['created_at', 'DESC']],
-    include: [
-    {
-      model: Comment,
-      attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
+   include: [
+      {
+        model: Comment,
+        attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
         include: {
           model: User,
           attributes: ['username']
         }
       },
-    
       {
         model: User,
         attributes: ['username']
@@ -46,24 +46,22 @@ router.get('/:id', (req, res) => {
     where: {
       id: req.params.id
     },
-     attributes: [
+    attributes: [
       'id',
       'post_text',
       'title',
       'created_at',
-      [sequelize.literal('(SELECT COUNT(*) FROM yes WHERE post.id = yes.post_id)'),
-        'yes_count']
-      ],
+      [sequelize.literal('(SELECT COUNT(*) FROM yes WHERE post.id = yes.post_id)'), 'yes_count']
+    ],
     include: [
       {
-      model: Comment,
-      attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
+        model: Comment,
+        attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
         include: {
           model: User,
           attributes: ['username']
         }
       },
-      
       {
         model: User,
         attributes: ['username']

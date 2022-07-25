@@ -11,7 +11,7 @@
   </div>
 </article>
 
-{{!-- {{#if loggedIn}} --}}
+{{#if loggedIn}}
 <form class="comment-form">
 <div>
   <textarea name="comment-body"></textarea>
@@ -22,7 +22,7 @@
   <button type="button" class="yes-btn">yes</button>
 </div>
 </form>
-{{!-- {{/if}} --}}
+{{/if}}
 
 <div class="comments">
   {{#each post.comments}}

@@ -32,7 +32,7 @@ Yes.init(
     timestamps: false,
     freezeTableName: true,
     underscored: true,
-    modelName: 'Yes'
+    modelName: 'yes'
   }
 );
 
