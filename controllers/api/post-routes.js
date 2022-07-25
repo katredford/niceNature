@@ -76,7 +76,7 @@ router.get('/:id', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-  // expects {title: 'Taskmaster goes public!', post_text: 'https://taskmaster.com/press', user_id: 1}
+  // expects {title: 'Taskmaster goes public!', post_url: 'https://taskmaster.com/press', user_id: 1}
   if (req.session) {
     Post.create({
       title: req.body.title,
@@ -95,7 +95,7 @@ router.put('/yes', (req, res) => {
   // custom static method created in models/Post.js
   if (req.session) {
     Post.yes({ ...req.body, user_id: req.session.user_id }, { Yes, Comment, User })
-      .then(updatedyesData => res.json(updatedyesData))
+      .then(updatedYesData => res.json(updatedYesData))
       .catch(err => {
         console.log(err);
         res.status(500).json(err);

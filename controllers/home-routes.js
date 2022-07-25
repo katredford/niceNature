@@ -2,8 +2,9 @@ const router = require('express').Router();
 const sequelize = require('../config/connection');
 const { Post, User, Comment, Yes } = require('../models');
 
+// get all posts for homepage
 router.get('/', (req, res) => {
-  
+  console.log('======================');
   Post.findAll({
     attributes: [
       'id',
@@ -28,8 +29,6 @@ router.get('/', (req, res) => {
     ]
   })
     .then(dbPostData => {
-      // pass a single post object into the homepage template
-    
       const posts = dbPostData.map(post => post.get({ plain: true }));
 
       res.render('homepage', {
@@ -43,15 +42,7 @@ router.get('/', (req, res) => {
     });
 });
 
-// router.get('/login', (req, res) => {
-//  if (req.session.loggedIn) {
-//     res.redirect('/');
-//     return;
-//   }
-
-//   res.render('login');
-// });
-
+// get single post
 router.get('/post/:id', (req, res) => {
   Post.findOne({
     where: {
@@ -62,10 +53,9 @@ router.get('/post/:id', (req, res) => {
       'post_text',
       'title',
       'created_at',
-      [sequelize.literal('(SELECT COUNT(*) FROM yes WHERE post.id = yes.post_id)'),
-        'yes_count']
+      [sequelize.literal('(SELECT COUNT(*) FROM yes WHERE post.id = yes.post_id)'), 'yes_count']
     ],
-    indclude: [
+    include: [
       {
         model: Comment,
         attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
@@ -86,15 +76,12 @@ router.get('/post/:id', (req, res) => {
         return;
       }
 
-      //serialize the data
       const post = dbPostData.get({ plain: true });
 
-      //pass data to template
       res.render('single-post', {
         post,
         loggedIn: req.session.loggedIn
       });
-
     })
     .catch(err => {
       console.log(err);
@@ -103,7 +90,7 @@ router.get('/post/:id', (req, res) => {
 });
 
 router.get('/login', (req, res) => {
- if (req.session.loggedIn) {
+  if (req.session.loggedIn) {
     res.redirect('/');
     return;
   }

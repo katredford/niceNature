@@ -1,3 +1,3 @@
-DROP DATABASE IF EXISTS nice_nature;
+DROP DATABASE IF EXISTS nicenature_db;
 
-CREATE DATABASE nice_nature;
+CREATE DATABASE nicenature_db;

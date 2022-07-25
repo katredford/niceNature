@@ -10,9 +10,8 @@ Yes.init(
       primaryKey: true,
       autoIncrement: true
     },
-     user_id: {
+    user_id: {
       type: DataTypes.INTEGER,
-      allowNull: false,
       references: {
         model: 'user',
         key: 'id'
@@ -20,7 +19,6 @@ Yes.init(
     },
     post_id: {
       type: DataTypes.INTEGER,
-      allowNull: false,
       references: {
         model: 'post',
         key: 'id'

@@ -13,7 +13,6 @@ async function commentFormHandler(event) {
         post_id,
         comment_text
       }),
-      
       headers: {
         'Content-Type': 'application/json'
       }
